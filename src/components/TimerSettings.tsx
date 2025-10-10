@@ -35,17 +35,17 @@ export const TimerSettings = ({ onStart }: TimerSettingsProps) => {
   };
 
   return (
-    <Card className="p-8 cyber-border bg-card/50 backdrop-blur-sm">
+    <Card className="p-8 pixel-border bg-card/80 backdrop-blur-sm">
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-neon-cyan mb-2 uppercase">ตั้งเวลา Countdown</h2>
-          <p className="text-muted-foreground text-sm">กำหนดเวลาที่ต้องการนับถอยหลัง</p>
+          <h2 className="text-lg md:text-xl font-bold text-pixel-pink mb-3 uppercase">SET TIMER</h2>
+          <p className="text-muted-foreground text-[10px] leading-relaxed">กำหนดเวลานับถอยหลัง</p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="days" className="text-primary uppercase text-xs font-bold tracking-wider">
-              Days
+            <Label htmlFor="days" className="text-primary uppercase text-[10px] font-bold tracking-wider">
+              DAYS
             </Label>
             <Input
               id="days"
@@ -54,13 +54,13 @@ export const TimerSettings = ({ onStart }: TimerSettingsProps) => {
               max="999"
               value={days}
               onChange={(e) => setDays(Math.max(0, parseInt(e.target.value) || 0))}
-              className="bg-background/50 border-primary/30 text-foreground text-center text-lg font-bold h-14"
+              className="bg-background/50 border-4 border-border text-foreground text-center text-base font-bold h-12 pixel-border-inset hover:border-primary transition-smooth"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="hours" className="text-primary uppercase text-xs font-bold tracking-wider">
-              Hours
+            <Label htmlFor="hours" className="text-primary uppercase text-[10px] font-bold tracking-wider">
+              HOURS
             </Label>
             <Input
               id="hours"
@@ -69,13 +69,13 @@ export const TimerSettings = ({ onStart }: TimerSettingsProps) => {
               max="23"
               value={hours}
               onChange={(e) => setHours(Math.max(0, Math.min(23, parseInt(e.target.value) || 0)))}
-              className="bg-background/50 border-primary/30 text-foreground text-center text-lg font-bold h-14"
+              className="bg-background/50 border-4 border-border text-foreground text-center text-base font-bold h-12 pixel-border-inset hover:border-primary transition-smooth"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="minutes" className="text-primary uppercase text-xs font-bold tracking-wider">
-              Minutes
+            <Label htmlFor="minutes" className="text-primary uppercase text-[10px] font-bold tracking-wider">
+              MINS
             </Label>
             <Input
               id="minutes"
@@ -84,13 +84,13 @@ export const TimerSettings = ({ onStart }: TimerSettingsProps) => {
               max="59"
               value={minutes}
               onChange={(e) => setMinutes(Math.max(0, Math.min(59, parseInt(e.target.value) || 0)))}
-              className="bg-background/50 border-primary/30 text-foreground text-center text-lg font-bold h-14"
+              className="bg-background/50 border-4 border-border text-foreground text-center text-base font-bold h-12 pixel-border-inset hover:border-primary transition-smooth"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="seconds" className="text-primary uppercase text-xs font-bold tracking-wider">
-              Seconds
+            <Label htmlFor="seconds" className="text-primary uppercase text-[10px] font-bold tracking-wider">
+              SECS
             </Label>
             <Input
               id="seconds"
@@ -99,38 +99,38 @@ export const TimerSettings = ({ onStart }: TimerSettingsProps) => {
               max="59"
               value={seconds}
               onChange={(e) => setSeconds(Math.max(0, Math.min(59, parseInt(e.target.value) || 0)))}
-              className="bg-background/50 border-primary/30 text-foreground text-center text-lg font-bold h-14"
+              className="bg-background/50 border-4 border-border text-foreground text-center text-base font-bold h-12 pixel-border-inset hover:border-primary transition-smooth"
             />
           </div>
         </div>
 
         <div className="space-y-3">
-          <p className="text-xs text-muted-foreground uppercase tracking-wider text-center">Quick Set</p>
+          <p className="text-[8px] text-muted-foreground uppercase tracking-wider text-center">QUICK SET</p>
           <div className="grid grid-cols-3 gap-2">
-            <Button type="button" variant="ghost" onClick={() => quickSet(1)} className="text-xs">
-              1 min
+            <Button type="button" variant="ghost" onClick={() => quickSet(1)} className="text-[10px] h-10">
+              1 MIN
             </Button>
-            <Button type="button" variant="ghost" onClick={() => quickSet(5)} className="text-xs">
-              5 min
+            <Button type="button" variant="ghost" onClick={() => quickSet(5)} className="text-[10px] h-10">
+              5 MIN
             </Button>
-            <Button type="button" variant="ghost" onClick={() => quickSet(10)} className="text-xs">
-              10 min
+            <Button type="button" variant="ghost" onClick={() => quickSet(10)} className="text-[10px] h-10">
+              10 MIN
             </Button>
-            <Button type="button" variant="ghost" onClick={() => quickSet(30)} className="text-xs">
-              30 min
+            <Button type="button" variant="ghost" onClick={() => quickSet(30)} className="text-[10px] h-10">
+              30 MIN
             </Button>
-            <Button type="button" variant="ghost" onClick={() => quickSet(60)} className="text-xs">
-              1 hour
+            <Button type="button" variant="ghost" onClick={() => quickSet(60)} className="text-[10px] h-10">
+              1 HOUR
             </Button>
-            <Button type="button" variant="ghost" onClick={() => quickSet(120)} className="text-xs">
-              2 hours
+            <Button type="button" variant="ghost" onClick={() => quickSet(120)} className="text-[10px] h-10">
+              2 HOUR
             </Button>
           </div>
         </div>
 
         <Button type="submit" size="lg" className="w-full">
           <Zap className="mr-2" />
-          เริ่ม Countdown
+          START
         </Button>
       </form>
     </Card>

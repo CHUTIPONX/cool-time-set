@@ -22,7 +22,7 @@ export const TimerControls = ({ isRunning, onPause, onResume, onReset }: TimerCo
           Resume
         </Button>
       )}
-      <Button onClick={onReset} variant="cyber" size="lg" className="w-full sm:w-auto">
+      <Button onClick={onReset} variant="pixel" size="lg" className="w-full sm:w-auto">
         <RotateCcw className="mr-2" />
         Reset
       </Button>

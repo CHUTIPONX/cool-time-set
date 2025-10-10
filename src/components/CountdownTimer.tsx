@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { TimerDisplay } from "./TimerDisplay";
 import { TimerControls } from "./TimerControls";
 import { TimerSettings } from "./TimerSettings";
+import pixelCityBg from "@/assets/pixel-city-bg.png";
 
 export interface TimeLeft {
   days: number;
@@ -81,14 +82,24 @@ const CountdownTimer = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl space-y-8 animate-slide-in">
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Pixel City Background */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30"
+        style={{ 
+          backgroundImage: `url(${pixelCityBg})`,
+          imageRendering: 'pixelated'
+        }}
+      />
+      
+      {/* Content */}
+      <div className="w-full max-w-4xl space-y-8 animate-slide-in relative z-10">
         <div className="text-center space-y-4">
-          <h1 className="text-5xl md:text-7xl font-black text-neon-cyan animate-flicker">
-            CYBER COUNTDOWN
+          <h1 className="text-3xl md:text-5xl font-bold text-pixel-pink animate-pixel-bounce drop-shadow-lg">
+            PIXEL COUNTDOWN
           </h1>
-          <p className="text-lg text-muted-foreground uppercase tracking-widest">
-            Futuristic Timer System
+          <p className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-widest">
+            RETRO TIMER SYSTEM
           </p>
         </div>
 

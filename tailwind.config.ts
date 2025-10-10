@@ -14,7 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        orbitron: ['Orbitron', 'sans-serif'],
+        pixel: ['"Press Start 2P"', 'cursive'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -85,19 +85,21 @@ export default {
             height: "0",
           },
         },
-        "pulse-glow": {
+        "pixel-bounce": {
           "0%, 100%": {
-            opacity: "1",
-            filter: "drop-shadow(0 0 8px hsl(var(--primary)))",
+            transform: "translateY(0)",
           },
           "50%": {
-            opacity: "0.8",
-            filter: "drop-shadow(0 0 20px hsl(var(--primary)))",
+            transform: "translateY(-8px)",
           },
         },
-        "flicker": {
-          "0%, 100%": { opacity: "1" },
-          "50%": { opacity: "0.95" },
+        "pixel-float": {
+          "0%, 100%": {
+            transform: "translateY(0px)",
+          },
+          "50%": {
+            transform: "translateY(-4px)",
+          },
         },
         "slide-in": {
           from: {
@@ -113,8 +115,8 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "pulse-glow": "pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "flicker": "flicker 3s ease-in-out infinite",
+        "pixel-bounce": "pixel-bounce 0.6s ease-in-out infinite",
+        "pixel-float": "pixel-float 2s ease-in-out infinite",
         "slide-in": "slide-in 0.5s ease-out",
       },
     },
