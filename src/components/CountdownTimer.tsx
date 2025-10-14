@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { TimerDisplay } from "./TimerDisplay";
 import { TimerControls } from "./TimerControls";
 import { TimerSettings } from "./TimerSettings";
 import pixelCityBg from "@/assets/pixel-city-bg.png";
+import { toast } from "@/hooks/use-toast";
 
 export interface TimeLeft {
   days: number;
@@ -21,6 +22,59 @@ const CountdownTimer = () => {
   });
   const [isRunning, setIsRunning] = useState(false);
   const [showSettings, setShowSettings] = useState(true);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const lastSecondRef = useRef<number>(-1);
+
+  // Initialize Audio Context
+  useEffect(() => {
+    audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    return () => {
+      audioContextRef.current?.close();
+    };
+  }, []);
+
+  // Play tick sound
+  const playTick = () => {
+    if (!audioContextRef.current) return;
+    const ctx = audioContextRef.current;
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    
+    oscillator.frequency.value = 800;
+    oscillator.type = 'square';
+    gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+    
+    oscillator.start(ctx.currentTime);
+    oscillator.stop(ctx.currentTime + 0.05);
+  };
+
+  // Play alarm sound
+  const playAlarm = () => {
+    if (!audioContextRef.current) return;
+    const ctx = audioContextRef.current;
+    
+    for (let i = 0; i < 3; i++) {
+      setTimeout(() => {
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        oscillator.frequency.value = 1000;
+        oscillator.type = 'sine';
+        gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+        
+        oscillator.start(ctx.currentTime);
+        oscillator.stop(ctx.currentTime + 0.3);
+      }, i * 400);
+    }
+  };
 
   useEffect(() => {
     if (!isRunning || !targetTime) return;
@@ -31,7 +85,11 @@ const CountdownTimer = () => {
       if (difference <= 0) {
         setIsRunning(false);
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-        // Alert or sound can be added here
+        playAlarm();
+        toast({
+          title: "⏰ Time's Up!",
+          description: "Your countdown has finished!",
+        });
         return;
       }
 
@@ -39,6 +97,12 @@ const CountdownTimer = () => {
       const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+      // Play tick sound on second change
+      if (seconds !== lastSecondRef.current && isRunning) {
+        playTick();
+        lastSecondRef.current = seconds;
+      }
 
       setTimeLeft({ days, hours, minutes, seconds });
     };
@@ -95,7 +159,7 @@ const CountdownTimer = () => {
       {/* Content */}
       <div className="w-full max-w-4xl space-y-8 animate-slide-in relative z-10">
         <div className="text-center space-y-4">
-          <h1 className="text-3xl md:text-5xl font-bold text-pixel-pink animate-pixel-bounce drop-shadow-lg">
+          <h1 className="text-3xl md:text-5xl font-bold text-pixel-pink drop-shadow-lg">
             PIXEL COUNTDOWN
           </h1>
           <p className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-widest">
