@@ -23,7 +23,7 @@ const CountdownTimer = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [showSettings, setShowSettings] = useState(true);
   const audioContextRef = useRef<AudioContext | null>(null);
-  const lastSecondRef = useRef<number>(-1);
+  const alarmIntervalRef = useRef<number | null>(null);
 
   // Initialize Audio Context
   useEffect(() => {
@@ -33,46 +33,39 @@ const CountdownTimer = () => {
     };
   }, []);
 
-  // Play tick sound
-  const playTick = () => {
+  // Play alarm sound (single beep sequence)
+  const playAlarmBeep = () => {
     if (!audioContextRef.current) return;
     const ctx = audioContextRef.current;
-    const oscillator = ctx.createOscillator();
-    const gainNode = ctx.createGain();
     
-    oscillator.connect(gainNode);
-    gainNode.connect(ctx.destination);
-    
-    oscillator.frequency.value = 800;
-    oscillator.type = 'square';
-    gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
-    
-    oscillator.start(ctx.currentTime);
-    oscillator.stop(ctx.currentTime + 0.05);
+    for (let i = 0; i < 5; i++) {
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      
+      oscillator.frequency.value = i % 2 === 0 ? 1200 : 900;
+      oscillator.type = 'square';
+      gainNode.gain.setValueAtTime(0.4, ctx.currentTime + i * 0.15);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.15 + 0.12);
+      
+      oscillator.start(ctx.currentTime + i * 0.15);
+      oscillator.stop(ctx.currentTime + i * 0.15 + 0.12);
+    }
   };
 
-  // Play alarm sound
-  const playAlarm = () => {
-    if (!audioContextRef.current) return;
-    const ctx = audioContextRef.current;
-    
-    for (let i = 0; i < 3; i++) {
-      setTimeout(() => {
-        const oscillator = ctx.createOscillator();
-        const gainNode = ctx.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(ctx.destination);
-        
-        oscillator.frequency.value = 1000;
-        oscillator.type = 'sine';
-        gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-        
-        oscillator.start(ctx.currentTime);
-        oscillator.stop(ctx.currentTime + 0.3);
-      }, i * 400);
+  // Start repeating alarm
+  const startAlarm = () => {
+    playAlarmBeep();
+    alarmIntervalRef.current = window.setInterval(playAlarmBeep, 1200);
+  };
+
+  // Stop alarm
+  const stopAlarm = () => {
+    if (alarmIntervalRef.current) {
+      clearInterval(alarmIntervalRef.current);
+      alarmIntervalRef.current = null;
     }
   };
 
@@ -85,10 +78,10 @@ const CountdownTimer = () => {
       if (difference <= 0) {
         setIsRunning(false);
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-        playAlarm();
+        startAlarm();
         toast({
           title: "⏰ Time's Up!",
-          description: "Your countdown has finished!",
+          description: "กดปุ่ม Reset เพื่อปิดเสียง",
         });
         return;
       }
@@ -97,12 +90,6 @@ const CountdownTimer = () => {
       const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-      // Play tick sound on second change
-      if (seconds !== lastSecondRef.current && isRunning) {
-        playTick();
-        lastSecondRef.current = seconds;
-      }
 
       setTimeLeft({ days, hours, minutes, seconds });
     };
@@ -139,6 +126,7 @@ const CountdownTimer = () => {
   };
 
   const handleReset = () => {
+    stopAlarm();
     setIsRunning(false);
     setTargetTime(null);
     setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
