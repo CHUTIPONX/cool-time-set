@@ -23,7 +23,7 @@ const CountdownTimer = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [showSettings, setShowSettings] = useState(true);
   const audioContextRef = useRef<AudioContext | null>(null);
-  const lastSecondRef = useRef<number>(-1);
+  const alarmIntervalRef = useRef<number | null>(null);
 
   // Initialize Audio Context
   useEffect(() => {
