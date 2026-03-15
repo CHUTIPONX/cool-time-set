@@ -33,46 +33,39 @@ const CountdownTimer = () => {
     };
   }, []);
 
-  // Play tick sound
-  const playTick = () => {
+  // Play alarm sound (single beep sequence)
+  const playAlarmBeep = () => {
     if (!audioContextRef.current) return;
     const ctx = audioContextRef.current;
-    const oscillator = ctx.createOscillator();
-    const gainNode = ctx.createGain();
     
-    oscillator.connect(gainNode);
-    gainNode.connect(ctx.destination);
-    
-    oscillator.frequency.value = 800;
-    oscillator.type = 'square';
-    gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
-    
-    oscillator.start(ctx.currentTime);
-    oscillator.stop(ctx.currentTime + 0.05);
+    for (let i = 0; i < 5; i++) {
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      
+      oscillator.frequency.value = i % 2 === 0 ? 1200 : 900;
+      oscillator.type = 'square';
+      gainNode.gain.setValueAtTime(0.4, ctx.currentTime + i * 0.15);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.15 + 0.12);
+      
+      oscillator.start(ctx.currentTime + i * 0.15);
+      oscillator.stop(ctx.currentTime + i * 0.15 + 0.12);
+    }
   };
 
-  // Play alarm sound
-  const playAlarm = () => {
-    if (!audioContextRef.current) return;
-    const ctx = audioContextRef.current;
-    
-    for (let i = 0; i < 3; i++) {
-      setTimeout(() => {
-        const oscillator = ctx.createOscillator();
-        const gainNode = ctx.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(ctx.destination);
-        
-        oscillator.frequency.value = 1000;
-        oscillator.type = 'sine';
-        gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-        
-        oscillator.start(ctx.currentTime);
-        oscillator.stop(ctx.currentTime + 0.3);
-      }, i * 400);
+  // Start repeating alarm
+  const startAlarm = () => {
+    playAlarmBeep();
+    alarmIntervalRef.current = window.setInterval(playAlarmBeep, 1200);
+  };
+
+  // Stop alarm
+  const stopAlarm = () => {
+    if (alarmIntervalRef.current) {
+      clearInterval(alarmIntervalRef.current);
+      alarmIntervalRef.current = null;
     }
   };
 
