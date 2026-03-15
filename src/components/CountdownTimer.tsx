@@ -78,10 +78,10 @@ const CountdownTimer = () => {
       if (difference <= 0) {
         setIsRunning(false);
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-        playAlarm();
+        startAlarm();
         toast({
           title: "⏰ Time's Up!",
-          description: "Your countdown has finished!",
+          description: "กดปุ่ม Reset เพื่อปิดเสียง",
         });
         return;
       }
@@ -90,12 +90,6 @@ const CountdownTimer = () => {
       const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-      // Play tick sound on second change
-      if (seconds !== lastSecondRef.current && isRunning) {
-        playTick();
-        lastSecondRef.current = seconds;
-      }
 
       setTimeLeft({ days, hours, minutes, seconds });
     };
